@@ -56,7 +56,7 @@ function addCart($id,$qty){
 }
 function getProductDetail($id){
 	global $db;
-	$sql="select * from product where id=?";
+	$sql="select * from product where pID=?";
 	$stmt=mysqli_prepare($db,$sql);
 	mysqli_stmt_bind_param($stmt,"i",$id);
 	mysqli_stmt_execute($stmt);
