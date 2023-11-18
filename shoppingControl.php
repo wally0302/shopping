@@ -1,5 +1,5 @@
 <?php
-require('todoModel.php');
+require('shoppingModel.php');
 
 $act=$_REQUEST['act'];
 switch ($act) {
