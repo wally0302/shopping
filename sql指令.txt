@@ -1,0 +1,54 @@
+軟工購物車MySQL
+
+1. 新增商品項目
+ex:
+insert into product (name, price, stock, content) values ('吹風機', 850, 350, '可以調節多段變速的實用吹風機');
+
+2. 新增購物車項目
+ex:
+insert into cart (pID, amount) values (5, 2);
+
+3. 查看資料表連結情況
+ex:
+select cart.*, product.name, product.price, product.stock, product.content from cart inner join product on cart.pID = product.pID;
+
+	客戶動作
+
+4. 【客戶查看商品列表】
+select pID, name, price, stock from product;
+
+5. 【客戶查看指定商品詳細資訊】
+select name, price, stock, content from product where pID = @pID;
+
+6. 【客戶將商品放入購物車】
+insert into cart (pID, amount) values (@pID, 1);
+
+7. 【客戶查看購物車內容】
+select product.name, product.price, cart.amount from product inner join cart on product.pID = cart.pID;
+
+8. 【客戶修改購物車項目數量】
+update cart set amount = @newAmount where kID = @kID;
+
+9. 【客戶刪除購物車項目】
+delete from cart where kID = @kID;
+
+	商家動作
+
+10.【商家查看商品列表】
+select pID, name, price, stock from product;
+
+11.【商家修改指定商品-名稱】
+update cart set name = @newName where pID = @pID;
+
+12.【商家修改指定商品-價格】
+update cart set price = @newPrice where pID = @pID;
+
+13.【商家修改指定商品-庫存】
+update cart set stock = @newStock where pID = @pID;
+
+14.【商家刪除指定商品]】
+delete from product where pID = @pID;
+
+
+
+
