@@ -23,19 +23,25 @@ case "listProduct":
 	$products=listProduct();
 	echo json_encode($products);
 	return;
+
+// 【客戶將商品放入購物車】
 case "addCart":	
-	$id=(int)$_REQUEST['id'];
-	$qty=(int)$_REQUEST['qty'];
+	$id=(int)$_REQUEST['id']; //商品編號 10
+	$qty=(int)$_REQUEST['qty'];//數量 3
 	addCart($id,$qty);
 	return;
 case "getProductDetail":	
-	$id=(int)$_REQUEST['id'];
+	$id=(int)$_REQUEST['id'];//前端傳來的商品編號
 	$product=getProductDetail($id);
 	echo json_encode($product);
 	return;
 case "listCart":
 	$cart=listCart();
 	echo json_encode($cart);
+	return;
+case "delCart":
+	$id=(int)$_REQUEST['id'];
+	delCart($id);
 	return;
 default:
   

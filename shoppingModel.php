@@ -77,7 +77,7 @@ function getProductDetail($pID){
 //【客戶查看購物車內容】
 function listCart(){
 	global $db;
-	$sql="select product.name, product.price, cart.amount from product inner join cart on product.pID = cart.pID;";
+	$sql="select product.pID,product.name, product.price, cart.amount from product inner join cart on product.pID = cart.pID;";
 	$stmt=mysqli_prepare($db,$sql);
 	mysqli_stmt_execute($stmt);
 	$result=mysqli_stmt_get_result($stmt);
@@ -87,5 +87,13 @@ function listCart(){
 	}
 	return $rows;
 }
-
+//【客戶刪除購物車內容】
+function delCart($pID){
+	global $db;
+	$sql="delete from cart where pID=?;";
+	$stmt=mysqli_prepare($db,$sql);
+	mysqli_stmt_bind_param($stmt,"i",$pID);
+	mysqli_stmt_execute($stmt);
+	return True;
+}
 ?>
