@@ -22,8 +22,16 @@ select pID, name, price, stock from product;
 5. 【客戶查看指定商品詳細資訊】
 select name, price, stock, content from product where pID = @pID;
 
-6. 【客戶將商品放入購物車】
+6. 【客戶將商品放入購物車(判斷購物車內此商品是否存在)】
+select count(*) from cart where pID = @pID;
+
+回傳資料為0則到6.1 不為0則到6.2
+
+6.1 【客戶將商品放入購物車(原本購物車無此商品)】
 insert into cart (pID, amount) values (@pID, 1);
+
+6.2 【客戶將商品放入購物車(購物車已有此商品)】
+update cart set amount = amount+1 where pID = @pID;
 
 7. 【客戶查看購物車內容】
 select product.name, product.price, cart.amount from product inner join cart on product.pID = cart.pID;
