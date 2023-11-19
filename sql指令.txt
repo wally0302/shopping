@@ -64,4 +64,6 @@ SELECT SUM(c.amount * p.price) AS total_amount
 FROM cart c
 JOIN product p ON c.pID = p.pID;
 
+16. 【商家新增商品】
+insert into product (name, price, stock, content) values (@name, @price, @stock, @content);
 
