@@ -33,6 +33,10 @@ case "getProductDetail":
 	$product=getProductDetail($id);
 	echo json_encode($product);
 	return;
+case "listCart":
+	$cart=listCart();
+	echo json_encode($cart);
+	return;
 default:
   
 }

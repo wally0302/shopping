@@ -1,3 +1,5 @@
+Google 文件 : https://docs.google.com/document/d/15J9mX-hQf2PxWg2XorUgNz1NV7PSKCt8-8q8x9GUQ6s/edit
+
 軟工購物車MySQL
 
 1. 新增商品項目
@@ -46,9 +48,12 @@ update cart set price = @newPrice where pID = @pID;
 13.【商家修改指定商品-庫存】
 update cart set stock = @newStock where pID = @pID;
 
-14.【商家刪除指定商品]】
+14.【商家刪除指定商品】
 delete from product where pID = @pID;
 
-
+15. 【計算出客戶購物車的總金額】
+SELECT SUM(c.amount * p.price) AS total_amount
+FROM cart c
+JOIN product p ON c.pID = p.pID;
 
 

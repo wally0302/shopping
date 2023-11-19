@@ -34,9 +34,11 @@ require('dbconfig.php');
 // 	mysqli_stmt_execute($stmt);  //執行SQL
 // 	return True;
 // }
+
+// 【客戶查看商品列表】
 function listProduct(){
 	global $db;
-	$sql="select * from product";
+	$sql="select pID, name, price, stock from product;";
 	$stmt=mysqli_prepare($db,$sql);
 	mysqli_stmt_execute($stmt);
 	$result=mysqli_stmt_get_result($stmt);
@@ -46,19 +48,23 @@ function listProduct(){
 	}
 	return $rows;
 }
-function addCart($id,$qty){
+// 【客戶將商品放入購物車】
+function addCart($pID,$amount){
+	//要放庫存量減少嗎?
 	global $db;
-	$sql="insert into cart (id,qty) values (?,?)";
+	$sql="insert into cart (pID,amount) values (?,?)";
 	$stmt=mysqli_prepare($db,$sql);
-	mysqli_stmt_bind_param($stmt,"ii",$id,$qty);
+	mysqli_stmt_bind_param($stmt,"ii",$pID,$amount);
 	mysqli_stmt_execute($stmt);
 	return True;
 }
-function getProductDetail($id){
+
+//【客戶查看指定商品詳細資訊】	
+function getProductDetail($pID){
 	global $db;
-	$sql="select * from product where pID=?";
+	$sql="select name, price, stock, content from product where pID=?";
 	$stmt=mysqli_prepare($db,$sql);
-	mysqli_stmt_bind_param($stmt,"i",$id);
+	mysqli_stmt_bind_param($stmt,"i",$pID);
 	mysqli_stmt_execute($stmt);
 	$result=mysqli_stmt_get_result($stmt);
 	$rows=array();
@@ -68,5 +74,18 @@ function getProductDetail($id){
 	return $rows;
 }
 
+//【客戶查看購物車內容】
+function listCart(){
+	global $db;
+	$sql="select product.name, product.price, cart.amount from product inner join cart on product.pID = cart.pID;";
+	$stmt=mysqli_prepare($db,$sql);
+	mysqli_stmt_execute($stmt);
+	$result=mysqli_stmt_get_result($stmt);
+	$rows=array();
+	while($r=mysqli_fetch_assoc($result)){
+		$rows[]=$r;
+	}
+	return $rows;
+}
 
 ?>
