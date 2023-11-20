@@ -26,9 +26,8 @@ case "listProduct":
 
 // 【客戶將商品放入購物車】
 case "addCart":	
-	$id=(int)$_REQUEST['id']; //商品編號 10
-	$qty=(int)$_REQUEST['qty'];//數量 3
-	addCart($id,$qty);
+	$id=(int)$_REQUEST['id']; //商品編號
+	addCart($id);
 	return;
 case "getProductDetail":	
 	$id=(int)$_REQUEST['id'];//前端傳來的商品編號

@@ -49,13 +49,35 @@ function listProduct(){
 	return $rows;
 }
 // 【客戶將商品放入購物車】
-function addCart($pID,$amount){
+function addCart($pID){
 	//要放庫存量減少嗎?
 	global $db;
-	$sql="insert into cart (pID,amount) values (?,?)";
-	$stmt=mysqli_prepare($db,$sql);
-	mysqli_stmt_bind_param($stmt,"ii",$pID,$amount);
+	//假如購物車裡面有此商品，則數量+1
+	$sql1 = "select count(*) from cart where pID=?";
+	$stmt = mysqli_prepare($db, $sql1);
+	mysqli_stmt_bind_param($stmt, "i", $pID);
 	mysqli_stmt_execute($stmt);
+	mysqli_stmt_bind_result($stmt, $count);
+	mysqli_stmt_fetch($stmt);
+	mysqli_stmt_close($stmt); // Close the first statement
+
+	if ($count > 0) {
+		// 購物車裡已經有此商品，數量+1
+		$sql2 = "update cart set amount = amount + 1 where pID=?";
+		$stmt = mysqli_prepare($db, $sql2);
+		mysqli_stmt_bind_param($stmt, "i", $pID);
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt); // Close the first statement
+
+	} else {
+		// 購物車裡沒有此商品，新增一筆資料
+		$sql3 = "insert into cart (pID, amount) values (?, 1)";
+		$stmt = mysqli_prepare($db, $sql3);
+		mysqli_stmt_bind_param($stmt, "i", $pID);
+		mysqli_stmt_execute($stmt);
+		mysqli_stmt_close($stmt); // Close the first statement
+
+	}
 	return True;
 }
 

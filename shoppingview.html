@@ -139,13 +139,10 @@
 			},
 			addCart: function (id) {
 				const that=this;
-				let mydat = new FormData();
-				mydat.append( "dat", JSON.stringify(this.newJob) );
-	
-				let url="shoppingControl.php?act=addJob";
+				console.log(id);
+				let url="shoppingControl.php?act=addCart&id="+id;
 				fetch(url,{
 					method: 'POST',
-					body: mydat // 將表單物件放入fetch的body屬性
 				})
 				.then(function(res){return res.text(); }) //取得傳回值，轉為文字
 				.then(function(data){ 
