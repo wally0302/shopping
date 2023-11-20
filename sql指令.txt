@@ -48,13 +48,13 @@ delete from cart where kID = @kID;
 select pID, name, price, stock from product;
 
 11.【商家修改指定商品-名稱】
-update cart set name = @newName where pID = @pID;
+update product set name = @newName where pID = @pID;
 
 12.【商家修改指定商品-價格】
-update cart set price = @newPrice where pID = @pID;
+update product set price = @newPrice where pID = @pID;
 
 13.【商家修改指定商品-庫存】
-update cart set stock = @newStock where pID = @pID;
+update product set stock = @newStock where pID = @pID;
 
 14.【商家刪除指定商品】
 delete from product where pID = @pID;
