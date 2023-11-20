@@ -57,9 +57,9 @@ function addCart($pID){
 	$stmt = mysqli_prepare($db, $sql1);
 	mysqli_stmt_bind_param($stmt, "i", $pID);
 	mysqli_stmt_execute($stmt);
-	mysqli_stmt_bind_result($stmt, $count);
+	mysqli_stmt_bind_result($stmt, $count); //會將結果存到count變數中
 	mysqli_stmt_fetch($stmt);
-	mysqli_stmt_close($stmt); // Close the first statement
+	mysqli_stmt_close($stmt); // 因為 prepare 所以需要用 close 關閉 statement，才能執行下一個 prepare
 
 	if ($count > 0) {
 		// 購物車裡已經有此商品，數量+1
