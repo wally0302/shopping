@@ -46,6 +46,16 @@ case "cartTotal":
     $total_amount=cartTotal();
     echo json_encode($total_amount);
     return;
+    case "delProduct":
+	$id=(int)$_REQUEST['id'];
+	delProduct($id);
+	return;
+    
+case "updateProduct":
+    $jsonStr = $_POST['dat'];
+    $product = json_decode($jsonStr);
+    updateProduct($product->id, $product->name, $product->price, $product->stock, $product->content);
+    return;
 default:
   
 }

@@ -10,14 +10,15 @@
 		<h1>商品列表</h1>
 		<button @click="setAddUI()">新增商品</button><!--<button @click="listcart()">查看購物車</button>-->
 		<table border=1>
-			<tr><td>序號</td><td>商品名稱</td><td>價格</td><td>庫存</td><td>修改資訊</td><td>刪除商品</td></tr>
+			<tr><td>序號</td><td>商品名稱</td><td>價格</td><td>庫存</td><td>查看更多</td><td>修改資訊</td><td>刪除商品</td></tr>
 			<tr v-for="product in dat">
 				<td>{{product.pID}}</td>
 				<td>{{product.name}}</td>
 				<td>{{product.price}}</td>
 				<td>{{product.stock}}</td>
-				<td><button @click="setEditUI(job)">改</button></td><!--程式要改-->
-				<td><button @click="delJob(job.id)">刪</button><!--程式要改-->
+                <td><button @click="getProductDetail(product.pID)">詳細資訊</button></td>
+				<td><button @click="setEditUI(product.pID)">改</button></td><!--程式要改-->
+				<td><button @click="delProduct(product.pID)">刪</button><!--程式要改-->
 			</tr>
 		</table>
 	</div>
@@ -28,11 +29,11 @@
 	
 		商品介紹: <textarea v-model="newproduct.content"></textarea><br>
 	
-		<input type='button' @click="addJob()" value="save">
-	</div>
-	<!--<div v-if="UI=='detail'" v-for="product in dat">
+		<input type='button' @click="updateProduct()" value="保存">
+        <input type='button' @click="Cancel()" value="取消">
+	</div> 
+	<div v-if="UI=='detail'" v-for="product in dat">
 		<h1>{{product.name}}</h1>
-		<!--<button @click="setAddUI()">查看購物車</button>
 		<table border=1>
 			<tr><td>商品名稱</td><td>價格</td><td>庫存</td><td>商品介紹</td></tr>
 			<tr>
@@ -44,7 +45,7 @@
 	
 			</tr>
 		</table><button @click="back()">回到商品列表</button>
-	</div>-->
+	</div>
 	</div>
 	<script>
 	const todoApp= Vue.createApp({
@@ -111,25 +112,60 @@
 				that.setUI('main');
 				that.loadList();
 			},
+            delProduct: function (id) {
+				const that=this;
+				console.log(id);
+				let url="shoppingControl.php?act=delProduct&id="+id;
+				fetch(url,{
+					method: 'POST'
+				})
+				.then(function(res){return res.text(); }) //取得傳回值，轉為文字
+				.then(function(data){
+					that.setUI('main');
+				    that.loadList();
+				})
+			},
+            updateProduct: function () {
+			const that=this;
+			let mydat = new FormData();
+                mydat.append( "dat", JSON.stringify(this.newproduct) );
+
+                let url="shoppingControl.php?act=updateProduct";
+                fetch(url,{
+                    method: 'POST',
+                    body: mydat // 將表單物件放入fetch的body屬性
+                })
+                .then(function(res){return res.text(); }) //取得傳回值，轉為文字
+                .then(function(data){ 
+                    console.log(data);
+                    that.setUI('main');
+                    that.loadList();
+                })
+            },
 			addJob: function () {
 			const that=this;
 			let mydat = new FormData();
-			mydat.append( "dat", JSON.stringify(this.newproduct) );
+                mydat.append( "dat", JSON.stringify(this.newproduct) );
 
-			let url="shoppingControl.php?act=addPro";
-			fetch(url,{
-				method: 'POST',
-				body: mydat // 將表單物件放入fetch的body屬性
-			})
-			.then(function(res){return res.text(); }) //取得傳回值，轉為文字
-			.then(function(data){ 
-				console.log(data);
-				that.setUI('main');
-				that.loadList();
-			})
-		},
-			setEditUI: function(job) {
-				this.newJob=job;
+                let url="shoppingControl.php?act=addPro";
+                fetch(url,{
+                    method: 'POST',
+                    body: mydat // 將表單物件放入fetch的body屬性
+                })
+                .then(function(res){return res.text(); }) //取得傳回值，轉為文字
+                .then(function(data){ 
+                    console.log(data);
+                    that.setUI('main');
+                    that.loadList();
+                })
+            },
+            Cancel: function () {
+                const that=this;			
+                that.setUI('main');
+                that.loadList();
+            },
+			setEditUI: function(pID) {
+				this.newproduct.id = pID;
 				this.setUI('editForm');
 			},
 			setAddUI: function() {

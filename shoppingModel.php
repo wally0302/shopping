@@ -136,4 +136,21 @@ function cartTotal(){
     mysqli_stmt_close($stmt);
     return $row !== null ? $row : ['total_amount' => 0];
 }
+function delProduct($pID){
+	global $db;
+	$sql="delete from product where pID=?;";
+	$stmt=mysqli_prepare($db,$sql);
+	mysqli_stmt_bind_param($stmt,"i",$pID);
+	mysqli_stmt_execute($stmt);
+	return True;
+}
+
+function updateProduct($pID, $name, $price, $stock, $content){
+    global $db;
+	$sql="update product set name=? , price=? , stock=? , content=? where pID=?;";
+	$stmt=mysqli_prepare($db,$sql);
+	mysqli_stmt_bind_param($stmt, "ssssi", $name, $price, $stock, $content, $pID);
+	mysqli_stmt_execute($stmt);
+	return True;
+}
 ?>
