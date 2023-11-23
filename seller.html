@@ -17,7 +17,7 @@
 				<td>{{product.price}}</td>
 				<td>{{product.stock}}</td>
                 <td><button @click="getProductDetail(product.pID)">詳細資訊</button></td>
-				<td><button @click="setEditUI(product.pID)">改</button></td><!--程式要改-->
+				<td><button @click="setEditUI(product.pID, product.name, product.price, product.stock, product.content)">改</button></td><!--程式要改-->
 				<td><button @click="delProduct(product.pID)">刪</button><!--程式要改-->
 			</tr>
 		</table>
@@ -76,7 +76,7 @@
 		methods: {
 			loadList: function () {
 				const that=this; //this  ==> stands for vm6. let's save `this` to `that`
-				fetch('shoppingControl.php?act=listProduct')
+				fetch('shoppingControl.php?act=listProductInfo')
 				.then(function(response) {
 					return response.json();
 				})
@@ -192,8 +192,12 @@
                 that.setUI('main');
                 that.loadList();
             },
-			setEditUI: function(pID) {
+			setEditUI: function(pID, name, price, stock, content) {
 				this.newproduct.id = pID;
+                this.newproduct.name = name;
+                this.newproduct.price = price;
+                this.newproduct.stock = stock;
+                this.newproduct.content = content;
 				this.setUI('editForm');
 			},
 			setAddUI: function() {

@@ -136,6 +136,7 @@ function cartTotal(){
     mysqli_stmt_close($stmt);
     return $row !== null ? $row : ['total_amount' => 0];
 }
+//【商家刪除商品項目】
 function delProduct($pID){
 	global $db;
 	$sql="delete from product where pID=?;";
@@ -144,6 +145,7 @@ function delProduct($pID){
 	mysqli_stmt_execute($stmt);
 	return True;
 }
+
 function updateProduct($pID, $name, $price, $stock, $content){
     global $db;
 	$sql="update product set name=? , price=? , stock=? , content=? where pID=?;";
@@ -152,6 +154,7 @@ function updateProduct($pID, $name, $price, $stock, $content){
 	mysqli_stmt_execute($stmt);
 	return True;
 }
+
 function addProduct($name, $price, $stock, $content){
     global $db;
 	$sql="insert into product (name, price, stock, content) values (? , ? , ? , ?);";
@@ -159,5 +162,18 @@ function addProduct($name, $price, $stock, $content){
 	mysqli_stmt_bind_param($stmt, "ssss", $name, $price, $stock, $content);
 	mysqli_stmt_execute($stmt);
 	return True;
+}
+
+function listProductInfo(){
+	global $db;
+	$sql="select * from product;";
+	$stmt=mysqli_prepare($db,$sql);
+	mysqli_stmt_execute($stmt);
+	$result=mysqli_stmt_get_result($stmt);
+	$rows=array();
+	while($r=mysqli_fetch_assoc($result)){
+		$rows[]=$r;
+	}
+	return $rows;
 }
 ?>

@@ -46,7 +46,7 @@ case "cartTotal":
     $total_amount=cartTotal();
     echo json_encode($total_amount);
     return;
-    case "delProduct":
+case "delProduct":
 	$id=(int)$_REQUEST['id'];
 	delProduct($id);
 	return;
@@ -60,6 +60,11 @@ case "addProduct":
     $product = json_decode($jsonStr);
     addProduct($product->name, $product->price, $product->stock, $product->content);
     return;
+case "listProductInfo":
+	$products=listProductInfo();
+	echo json_encode($products);
+	return;
+    
 default:
   
 }
