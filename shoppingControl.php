@@ -50,11 +50,15 @@ case "cartTotal":
 	$id=(int)$_REQUEST['id'];
 	delProduct($id);
 	return;
-    
 case "updateProduct":
     $jsonStr = $_POST['dat'];
     $product = json_decode($jsonStr);
     updateProduct($product->id, $product->name, $product->price, $product->stock, $product->content);
+    return;
+case "addProduct":
+    $jsonStr = $_POST['dat'];
+    $product = json_decode($jsonStr);
+    addProduct($product->name, $product->price, $product->stock, $product->content);
     return;
 default:
   

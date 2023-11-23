@@ -31,7 +31,18 @@
 	
 		<input type='button' @click="updateProduct()" value="保存">
         <input type='button' @click="Cancel()" value="取消">
-	</div> 
+	</div>
+    <div v-if="UI=='addForm'">
+		商品名稱: <input type="text"  v-model="newproduct.name"/> <br/>
+		價格: <input type="text"  v-model="newproduct.price"/> <br/>
+		庫存: <input type="text"  v-model="newproduct.stock"/> <br/>
+	
+		商品介紹: <textarea v-model="newproduct.content"></textarea><br>
+	
+		<input type='button' @click="addProduct()" value="保存">
+        <input type='button' @click="Cancel()" value="取消">
+	</div>
+    
 	<div v-if="UI=='detail'" v-for="product in dat">
 		<h1>{{product.name}}</h1>
 		<table border=1>
@@ -142,6 +153,23 @@
                     that.loadList();
                 })
             },
+            addProduct: function () {
+			const that=this;
+			let mydat = new FormData();
+                mydat.append( "dat", JSON.stringify(this.newproduct) );
+
+                let url="shoppingControl.php?act=addProduct";
+                fetch(url,{
+                    method: 'POST',
+                    body: mydat // 將表單物件放入fetch的body屬性
+                })
+                .then(function(res){return res.text(); }) //取得傳回值，轉為文字
+                .then(function(data){ 
+                    console.log(data);
+                    that.setUI('main');
+                    that.loadList();
+                })
+            },
 			addJob: function () {
 			const that=this;
 			let mydat = new FormData();
@@ -176,7 +204,7 @@
 					stock: '',
 					content: ''
 				};
-				this.setUI('editForm');
+				this.setUI('addForm');
 			},
 			setUI: function(page) {
 				this.UI=page;

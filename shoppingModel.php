@@ -144,12 +144,19 @@ function delProduct($pID){
 	mysqli_stmt_execute($stmt);
 	return True;
 }
-
 function updateProduct($pID, $name, $price, $stock, $content){
     global $db;
 	$sql="update product set name=? , price=? , stock=? , content=? where pID=?;";
 	$stmt=mysqli_prepare($db,$sql);
 	mysqli_stmt_bind_param($stmt, "ssssi", $name, $price, $stock, $content, $pID);
+	mysqli_stmt_execute($stmt);
+	return True;
+}
+function addProduct($name, $price, $stock, $content){
+    global $db;
+	$sql="insert into product (name, price, stock, content) values (? , ? , ? , ?);";
+	$stmt=mysqli_prepare($db,$sql);
+	mysqli_stmt_bind_param($stmt, "ssss", $name, $price, $stock, $content);
 	mysqli_stmt_execute($stmt);
 	return True;
 }
