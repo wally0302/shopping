@@ -126,4 +126,14 @@ function delCart($pID){
 	mysqli_stmt_execute($stmt);
 	return True;
 }
+function cartTotal(){
+    global $db;
+    $sql="select sum(c.amount * p.price) as total_amount from cart c inner join product p on c.pID = p.pID;";
+    $stmt=mysqli_prepare($db,$sql);
+    mysqli_stmt_execute($stmt);
+    $result=mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
+    return $row !== null ? $row : ['total_amount' => 0];
+}
 ?>

@@ -57,6 +57,7 @@
 				<td><button @click="delCart(product.pID)">刪</button></td>
 			</tr>
 		</table>
+        <h2>總金額：{{totalPrice}}</h2>
 	</div>
 	</div>
 	<script>
@@ -71,8 +72,9 @@
 					Price: '',
 					Stock: '',
 					Content: ''
-				}
-			}
+				},
+                totalPrice: 0
+			};
 		},
 		methods: {
 			loadList: function () {
@@ -95,12 +97,10 @@
 				.then(function(response) {
 					return response.json();
 				})
-				.then(function(myJson) {
-	
-	
-					that.dat = myJson;
-	
-				});
+                .then(function(myJson) {
+                    that.dat = myJson;
+                    that.cartTotal(); // 計算購物車總金額
+                });
 				this.setUI('cart');
 			},
 			getProductDetail: function (id) {
@@ -134,9 +134,20 @@
 				.then(function(res){return res.text(); }) //取得傳回值，轉為文字
 				.then(function(data){
 					that.setUI('main');
-					that.loadList();
+				    that.listcart();
 				})
 			},
+            cartTotal: function () {
+                const that = this;
+                fetch('shoppingControl.php?act=cartTotal')
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(myJson) {
+                    console.log('Total Price:', myJson.total_amount);
+                    that.totalPrice = myJson.total_amount;
+                })
+            },			
 			addCart: function (id) {
 				const that=this;
 				console.log(id);

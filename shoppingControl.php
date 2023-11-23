@@ -42,6 +42,10 @@ case "delCart":
 	$id=(int)$_REQUEST['id'];
 	delCart($id);
 	return;
+case "cartTotal":
+    $total_amount=cartTotal();
+    echo json_encode($total_amount);
+    return;
 default:
   
 }
