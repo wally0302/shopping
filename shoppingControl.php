@@ -38,6 +38,10 @@ case "listCart":
 	$cart=listCart();
 	echo json_encode($cart);
 	return;
+case "listorder":
+	$order=listorder();
+	echo json_encode($order);
+	return;
 case "delCart":
 	$id=(int)$_REQUEST['id'];
 	delCart($id);
