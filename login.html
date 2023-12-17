@@ -29,20 +29,7 @@
         Password: <input type="text" v-model="loginacc.password" />
         <input type='button' @click="login()" value="login"/> <br/>
     </div>
-    <div v-if="UI=='UserSuccessLogin'">
-        <h2>User登入成功</h2>
-    </div>
-    <div v-if="UI=='UserFailLogin'">
-        <h2>User 登入失敗</h2>
-    </div>
 
-    <div v-if="UI=='SellSuccessLogin'">
-        <h2>Sell登入成功</h2>
-    </div>
-
-    <div v-if="UI=='SellFailLogin'">
-        <h2>Sell 登入失敗</h2>
-    </div>
 
     <div v-if="UI=='DeliverySuccessLogin'">
         <h2>Delivery登入成功</h2>
@@ -107,10 +94,10 @@
                 if (data.success==true) {
                     switch (data.role) {
                         case '1':
-                            that.setUI('UserSuccessLogin'); // 切換到成功頁面
+                            window.location.href = 'shoppingview.html';//跳轉到購物頁面
                             break;
                         case '2':
-                            that.setUI('SellSuccessLogin'); // 切換到成功頁面
+                            window.location.href = 'seller.html';//跳轉到賣家頁面
                             break;
                         case '3':
                             that.setUI('DeliverySuccessLogin'); // 切換到成功頁面
