@@ -53,7 +53,7 @@ case "login": // 登入
 	
     if ($result) {
         // 登入成功
-        $response = ["success" => true];
+        $response = ["success" => true, "role" => $result['role']];
     } else {
         // 登入失敗
         $response = ["success" => false];

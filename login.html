@@ -29,12 +29,31 @@
         Password: <input type="text" v-model="loginacc.password" />
         <input type='button' @click="login()" value="login"/> <br/>
     </div>
-    <div v-if="UI=='successlogin'">
-        <h2>登入成功</h2>
+    <div v-if="UI=='UserSuccessLogin'">
+        <h2>User登入成功</h2>
     </div>
-    <div v-if="UI=='faillogin'">
-        <h2>登入失敗</h2>
+    <div v-if="UI=='UserFailLogin'">
+        <h2>User 登入失敗</h2>
     </div>
+
+    <div v-if="UI=='SellSuccessLogin'">
+        <h2>Sell登入成功</h2>
+    </div>
+
+    <div v-if="UI=='SellFailLogin'">
+        <h2>Sell 登入失敗</h2>
+    </div>
+
+    <div v-if="UI=='DeliverySuccessLogin'">
+        <h2>Delivery登入成功</h2>
+    </div>
+
+    <div v-if="UI=='DeliveryFailLogin'">
+        <h2>Delivery 登入失敗</h2>
+    </div>
+
+
+
 	</div>
 	<script>
 	const todoApp= Vue.createApp({
@@ -84,11 +103,32 @@
             })
             .then(function(res) { return res.json(); }) // 取得傳回值，轉為 json
             .then(function(data) {
-                // console.log(data); // {success: true}
+                console.log(data); // {success: true}
                 if (data.success==true) {
-                    that.setUI('successlogin'); // 切換到成功頁面
+                    switch (data.role) {
+                        case '1':
+                            that.setUI('UserSuccessLogin'); // 切換到成功頁面
+                            break;
+                        case '2':
+                            that.setUI('SellSuccessLogin'); // 切換到成功頁面
+                            break;
+                        case '3':
+                            that.setUI('DeliverySuccessLogin'); // 切換到成功頁面
+                            break;
+                    }
+                    
                 } else {
-                    that.setUI('faillogin'); // 切換到失敗頁面
+                    switch (data.role) {
+                        case '1':
+                            that.setUI('UserFailLogin'); 
+                            break;
+                        case '2':
+                            that.setUI('SellFailLogin');
+                            break;
+                        case '3':
+                            that.setUI('DeliveryFailLogin');
+                            break;
+                    }
                 }
             })
             },
