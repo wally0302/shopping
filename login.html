@@ -1,0 +1,116 @@
+<html><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script type="text/javascript" src="https://unpkg.com/vue@next"></script>
+	</head>
+	
+	<body >
+	<hr />
+	<div id="main">
+	<div id="list" v-if="UI=='main'">
+		<h2>註冊</h2>
+        Name: <input type="text"  v-model="newacc.name"/> <br/>
+        ID: <input type="text"  v-model="newacc.account"/> <br/>
+        Password: <input type="text" v-model="newacc.password" /><br/>
+        Role: <select v-model="newacc.role">
+            <option value="1" selected>客戶</option>
+            <option value="2">商家</option>
+            <option value="3">物流</option>
+            </select> <br>
+        <input type='button' @click="register()" value="register"/>
+        <input type='button' @click="tologin()" value="去登入畫面"/>
+	</div>
+    <div v-if="UI=='success'">
+        <h2>成功註冊</h2>
+        <input type='button' @click="tologin()" value="去登入畫面"/>
+    </div>
+    <div v-if="UI=='loginForm'">
+        ID: <input type="text"  v-model="id"/> <br/>
+        Password: <input type="text" v-model="pwd" />
+        <input type='button' @click="login()" value="login"/> <br/>
+    </div>
+    <div v-if="UI=='successlogin'">
+        <h2>登入成功</h2>
+    </div>
+	</div>
+	<script>
+	const todoApp= Vue.createApp({
+		data() {
+			return {
+				UI: 'main',
+				dat: [],
+				newacc: {
+                    //uid: -1,
+					name: '',
+                    account: '',
+					password: '',
+					role: '',
+				}
+			}
+		},
+		methods: {
+            register: function () {
+			const that=this;
+			let mydat = new FormData();
+                mydat.append( "dat", JSON.stringify(this.newacc) );
+
+                let url="loginCheck.php?act=register";
+                fetch(url,{
+                    method: 'POST',
+                    body: mydat // 將表單物件放入fetch的body屬性
+                })
+                .then(function(res){return res.text(); }) //取得傳回值，轉為文字
+                .then(function(data){ 
+                    console.log(data);
+                    that.setUI('success');
+                })
+            },
+            login: function () {
+			const that=this;
+			let mydat = new FormData();
+                mydat.append( "dat", JSON.stringify(this.newacc) );
+
+                let url="loginCheck.php?act=login";
+                fetch(url,{
+                    method: 'POST',
+                    body: mydat // 將表單物件放入fetch的body屬性
+                })
+                .then(function(res){return res.text(); }) //取得傳回值，轉為文字
+                .then(function(data){ 
+                    console.log(data);
+                    that.setUI('success');
+                })
+            },
+            tologin: function () {
+                const that=this;
+                that.setUI('loginForm');
+            },
+			setEditUI: function(pID, name, price, stock, content) {
+				this.newacc.id = pID;
+                this.newacc.name = name;
+                this.newacc.price = price;
+                this.newacc.stock = stock;
+                this.newacc.content = content;
+				this.setUI('editForm');
+			},
+            checkLogin: function() {
+                /*
+                const role=Cookies.get('loginRole');
+                sessionStorage.setItem('role', role)
+                console.log(role, this.login.myRole);
+                */
+                if (this.myRole >0) {
+                    this.setUI('main');
+                } else {
+                    this.setUI('register');
+                }
+            },
+			setUI: function(page) {
+				this.UI=page;
+			}
+		},
+		created() {
+			//this.register();
+		}
+	}).mount("#main");
+	</script>
+	</body></html>
