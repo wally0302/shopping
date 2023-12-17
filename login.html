@@ -24,12 +24,16 @@
         <input type='button' @click="tologin()" value="去登入畫面"/>
     </div>
     <div v-if="UI=='loginForm'">
-        ID: <input type="text"  v-model="account"/> <br/>
-        Password: <input type="text" v-model="password" />
+        <h2>登入畫面</h2>
+        ID: <input type="text"  v-model="loginacc.account"/> <br/>
+        Password: <input type="text" v-model="loginacc.password" />
         <input type='button' @click="login()" value="login"/> <br/>
     </div>
     <div v-if="UI=='successlogin'">
         <h2>登入成功</h2>
+    </div>
+    <div v-if="UI=='faillogin'">
+        <h2>登入失敗</h2>
     </div>
 	</div>
 	<script>
@@ -44,7 +48,12 @@
                     account: '',
 					password: '',
 					role: '',
-				}
+				},
+                loginacc: {
+                    account: '',
+                    password: '',
+                }
+
 			}
 		},
 		methods: {
@@ -52,7 +61,7 @@
 			const that=this;
 			let mydat = new FormData();
                 mydat.append( "dat", JSON.stringify(this.newacc) );
-
+                
                 let url="loginCheck.php?act=register";
                 fetch(url,{
                     method: 'POST',
@@ -60,26 +69,30 @@
                 })
                 .then(function(res){return res.text(); }) //取得傳回值，轉為文字
                 .then(function(data){ 
-                    console.log(data);
                     that.setUI('success');
                 })
             },
             login: function () {
-			const that=this;
-			let mydat = new FormData();
-                mydat.append( "dat", JSON.stringify(this.newacc) );
+            const that = this;
+            let mydat = new FormData();
+            mydat.append("dat", JSON.stringify(this.loginacc));
+            let url = "loginCheck.php?act=login";
 
-                let url="loginCheck.php?act=login";
-                fetch(url,{
-                    method: 'POST',
-                    body: mydat // 將表單物件放入fetch的body屬性
-                })
-                .then(function(res){return res.text(); }) //取得傳回值，轉為文字
-                .then(function(data){ 
-                    console.log(data);
-                    that.setUI('success');
-                })
+            fetch(url, {
+                method: 'POST',
+                body: mydat
+            })
+            .then(function(res) { return res.json(); }) // 取得傳回值，轉為 json
+            .then(function(data) {
+                // console.log(data); // {success: true}
+                if (data.success==true) {
+                    that.setUI('successlogin'); // 切換到成功頁面
+                } else {
+                    that.setUI('faillogin'); // 切換到失敗頁面
+                }
+            })
             },
+
             tologin: function () {
                 const that=this;
                 that.setUI('loginForm');
