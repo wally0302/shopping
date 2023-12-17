@@ -119,7 +119,7 @@ function listCart(){
 }
 function listorder(){ //看訂單
 	global $db;
-	$sql="select id, amount, status from order_item;";
+	$sql="select oID, sum, status from orders;";
 	$stmt=mysqli_prepare($db,$sql);
 	mysqli_stmt_execute($stmt);
 	$result=mysqli_stmt_get_result($stmt);
