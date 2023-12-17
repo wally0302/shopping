@@ -117,6 +117,18 @@ function listCart(){
 	}
 	return $rows;
 }
+function listorder(){ //看訂單
+	global $db;
+	$sql="select id, amount, status from order_item;";
+	$stmt=mysqli_prepare($db,$sql);
+	mysqli_stmt_execute($stmt);
+	$result=mysqli_stmt_get_result($stmt);
+	$rows=array();
+	while($r=mysqli_fetch_assoc($result)){
+		$rows[]=$r;
+	}
+	return $rows;
+}
 //【客戶刪除購物車內容】
 function delCart($pID){
 	global $db;
