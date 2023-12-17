@@ -8,7 +8,7 @@
 	<div id="main">
 	<div id="list" v-if="UI=='main'">
 		<h1>商品列表</h1>
-		<!--<button @click="setAddUI()">新增商品</button>--><button @click="listcart()">查看購物車</button>
+		<!--<button @click="setAddUI()">新增商品</button>--><button @click="listcart()">查看購物車</button><button @click="listorder()">查看訂單</button>
 		<table border=1>
 			<tr><td>序號</td><td>商品名稱</td><td>價格</td><td>庫存</td><td>查看更多</td><td>加入購物車</td></tr>
 			<tr v-for="product in dat">
@@ -59,6 +59,18 @@
 		</table>
         <h2>總金額：{{totalPrice}}</h2>
 	</div>
+	<div v-if="UI=='order'"> <!--訂單頁面-->
+		<h1>我的訂單</h1>
+		<button @click="back()">回到商品列表</button>
+		<table border=1>
+			<tr><td>訂單編號</td><td>金額</td><td>狀態</td></tr>
+			<tr v-for="product in dat">
+				<td>{{product.id}}</td>
+				<td>{{product.amount}}</td>
+				<td>{{product.status}}</td>
+			</tr>
+		</table>
+	</div>
 	</div>
 	<script>
 	const todoApp= Vue.createApp({
@@ -102,6 +114,18 @@
                     that.cartTotal(); // 計算購物車總金額
                 });
 				this.setUI('cart');
+			},
+			listorder: function () { //列訂單12/17新增
+				const that=this; 
+				fetch('shoppingControl.php?act=listorder')
+				.then(function(response) {
+					return response.json();
+				})
+                .then(function(myJson) {
+                    that.dat = myJson;
+                    that.cartTotal(); // 計算購物車總金額
+                });
+				this.setUI('order');
 			},
 			getProductDetail: function (id) {
 				const that=this;
