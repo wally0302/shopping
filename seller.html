@@ -58,16 +58,17 @@
 		</table><button @click="back()">回到商品列表</button>
 	</div>
 	<div v-if="UI=='order'"> <!--訂單頁面-->
-		<h1>我的訂單</h1>
+		<h1>訂單</h1>
 		<button @click="back()">回到商品列表</button>
 		<table border=1>
-			<tr><td>訂單編號</td><td>金額</td><td>狀態</td></tr>
+			<tr><td>訂單編號</td><td>金額</td><td>狀態</td><td>處理訂單</td></tr>
 			<tr v-for="product in dat">
 				<td>{{product.oID}}</td>
 				<td>{{product.sum}}</td>
 				<td>{{product.status}}</td>
-			</tr>
-		</table>
+                <td v-if="product.status === '待確認'"><button @click="dealProduct(product.oID)">確認</button></td>
+				<td v-if="product.status === '已處理'"><button @click="sendProduct(product.oID)">出貨</button></td>
+				</table>
 	</div>
 	</div>
 	<script>
@@ -206,7 +207,7 @@
             },
 			listorder: function () { //列訂單
 				const that=this; 
-				fetch('shoppingControl.php?act=listorder')
+				fetch('shoppingControl.php?act=listAllorder')
 				.then(function(response) {
 					return response.json();
 				})
@@ -224,6 +225,32 @@
                 this.newproduct.content = content;
 				this.setUI('editForm');
 			},
+            // 處理訂單
+            dealProduct: function (oID) {
+                const that=this;
+                let url="shoppingControl.php?act=dealProduct&oID="+oID;
+                fetch(url,{
+                    method: 'POST',
+                })
+                .then(function(res){return res.text(); }) //取得傳回值，轉為文字
+                .then(function(data){ 
+                    console.log(data);
+                    that.listorder(that.uID);
+                })
+            },
+            // 出貨
+            sendProduct: function (oID) {
+                const that=this;
+                let url="shoppingControl.php?act=sendProduct&oID="+oID;
+                fetch(url,{
+                    method: 'POST',
+                })
+                .then(function(res){return res.text(); }) //取得傳回值，轉為文字
+                .then(function(data){ 
+                    console.log(data);
+                    that.listorder(that.uID);
+                })
+            },
 			setAddUI: function() {
 				this.newproduct={
 					id: -1,

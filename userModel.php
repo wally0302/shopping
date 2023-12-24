@@ -14,7 +14,7 @@ function register($name, $account, $password, $role){
 
 function login($account, $password){
     global $db;
-    $sql = "select * from userinfo where account=? and password=?";//如果查不到就會回傳null
+    $sql = "select * from userinfo where account=? and password=?";//如果查不到就會回傳null，如果查到就會回傳一個陣列，然後我要取她的uID
     $stmt = mysqli_prepare($db, $sql);
     mysqli_stmt_bind_param($stmt, "ss", $account, $password);
     mysqli_stmt_execute($stmt);

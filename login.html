@@ -94,7 +94,8 @@
                 if (data.success==true) {
                     switch (data.role) {
                         case '1':
-                            window.location.href = 'shoppingview.html';//跳轉到購物頁面
+                        window.location.href = 'shoppingview.html?uID=' + data.uID;
+                        
                             break;
                         case '2':
                             window.location.href = 'seller.html';//跳轉到賣家頁面
