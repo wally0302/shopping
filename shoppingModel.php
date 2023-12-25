@@ -300,13 +300,25 @@ function dealProduct($oID){
 	mysqli_stmt_execute($stmt);
 	return True;
 }
-// 【商家出貨】
+// 【商家寄送訂單】
 function sendProduct($oID){
     global $db;
-	$sql="update orders set status = '寄送中' where oID = ?";
+	$sql="update orders set status = '已寄送' where oID = ?";
 	$stmt=mysqli_prepare($db,$sql);
 	mysqli_stmt_bind_param($stmt,"i", $oID);
 	mysqli_stmt_execute($stmt);
 	return True;
 }
+// 【商家送訂單】
+function achieveProduct($oID){
+    global $db;
+	$sql="update orders set status = '已送達' where oID = ?";
+	$stmt=mysqli_prepare($db,$sql);
+	mysqli_stmt_bind_param($stmt,"i", $oID);
+	mysqli_stmt_execute($stmt);
+	return True;
+}
+
+
+
 ?>

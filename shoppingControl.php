@@ -147,10 +147,15 @@ case "dealProduct":
     dealProduct($oID);
     return;
 
-// 【商家出貨】
+// 【商家寄送出貨】
 case "sendProduct":	
 	$oID = (int)$_REQUEST['oID'];
     sendProduct($oID);
+    return;
+// 【商家出貨】
+case "achieveProduct":	
+	$oID = (int)$_REQUEST['oID'];
+    achieveProduct($oID);
     return;
 default:
   
