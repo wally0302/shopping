@@ -6,60 +6,8 @@
 	<body >
 	<hr />
 	<div id="main">
-	<div id="list" v-if="UI=='main'">
-		<h1>商家的商品列表</h1>
-		<button @click="setAddUI()">新增商品</button><button @click="listorder()">查看訂單</button><!--<button @click="listcart()">查看購物車</button>-->
-		<table border=1>
-			<tr><td>序號</td><td>商品名稱</td><td>價格</td><td>庫存</td><td>查看更多</td><td>修改資訊</td><td>刪除商品</td></tr>
-			<tr v-for="product in dat">
-				<td>{{product.pID}}</td>
-				<td>{{product.name}}</td>
-				<td>{{product.price}}</td>
-				<td>{{product.stock}}</td>
-                <td><button @click="getProductDetail(product.pID)">詳細資訊</button></td>
-				<td><button @click="setEditUI(product.pID, product.name, product.price, product.stock, product.content)">改</button></td><!--程式要改-->
-				<td><button @click="delProduct(product.pID)">刪</button><!--程式要改-->
-			</tr>
-		</table>
-	</div>
-	<div v-if="UI=='editForm'">
-		商品名稱: <input type="text"  v-model="newproduct.name"/> <br/>
-		價格: <input type="text"  v-model="newproduct.price"/> <br/>
-		庫存: <input type="text"  v-model="newproduct.stock"/> <br/>
-	
-		商品介紹: <textarea v-model="newproduct.content"></textarea><br>
-	
-		<input type='button' @click="updateProduct()" value="保存">
-        <input type='button' @click="Cancel()" value="取消">
-	</div>
-    <div v-if="UI=='addForm'">
-		商品名稱: <input type="text"  v-model="newproduct.name"/> <br/>
-		價格: <input type="text"  v-model="newproduct.price"/> <br/>
-		庫存: <input type="text"  v-model="newproduct.stock"/> <br/>
-	
-		商品介紹: <textarea v-model="newproduct.content"></textarea><br>
-	
-		<input type='button' @click="addProduct()" value="保存">
-        <input type='button' @click="Cancel()" value="取消">
-	</div>
-    
-	<div v-if="UI=='detail'" v-for="product in dat">
-		<h1>{{product.name}}</h1>
-		<table border=1>
-			<tr><td>商品名稱</td><td>價格</td><td>庫存</td><td>商品介紹</td></tr>
-			<tr>
-				<td>{{product.name}}</td>
-				<td>{{product.price}}</td>
-				<td>{{product.stock}}</td>
-				<td>{{product.content}}</td>
-				
-	
-			</tr>
-		</table><button @click="back()">回到商品列表</button>
-	</div>
-	<div v-if="UI=='order'"> <!--訂單頁面-->
-		<h1>訂單</h1>
-		<button @click="back()">回到商品列表</button>
+	<div v-if="UI=='main'"> 
+		<h1>物流</h1>
 		<table border=1>
 			<tr><td>訂單編號</td><td>金額</td><td>狀態</td><td>處理訂單</td></tr>
 			<tr v-for="product in dat">
@@ -67,7 +15,6 @@
 				<td>{{product.sum}}</td>
 				<td>{{product.status}}</td>
                 <td v-if="product.status === '待確認'"><button @click="dealProduct(product.oID)">確認</button></td>
-				<td v-if="product.status === '已處理'"><button @click="sendProduct(product.oID)">出貨</button></td>
 				</table>
 	</div>
 	</div>
@@ -213,9 +160,7 @@
 				})
                 .then(function(myJson) {
                     that.dat = myJson;
-                    that.cartTotal(); // 計算購物車總金額
                 });
-				this.setUI('order');
 			},
 			setEditUI: function(pID, name, price, stock, content) {
 				this.newproduct.id = pID;
@@ -266,7 +211,7 @@
 			}
 		},
 		created() {
-			this.loadList();
+			this.listorder();
 		}
 	}).mount("#main");
 	</script>
