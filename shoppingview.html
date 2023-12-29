@@ -12,10 +12,11 @@
 		<h1>User的商品列表</h1>
         <button @click="listcart(uID)">查看購物車</button><button @click="listorder(uID)">查看訂單</button>
 		<table border=1>
-			<tr><td>序號</td><td>商品名稱</td><td>價格</td><td>庫存</td><td>查看更多</td><td>加入購物車</td></tr>
+			<tr><td>序號</td><td>商品名稱</td><td>商家名稱</td><td>價格</td><td>庫存</td><td>查看更多</td><td>加入購物車</td></tr>
 			<tr v-for="product in dat">
 				<td>{{product.pID}}</td>
 				<td>{{product.name}}</td>
+				<td>{{product.uID}}</td>
 				<td>{{product.price}}</td>
 				<td>{{product.stock}}</td>
 				<td><button @click="getProductDetail(product.pID)">詳細資訊</button></td><!--程式要改-->
@@ -56,15 +57,14 @@
 		<h1>我的訂單</h1>
 		<button @click="back()">回到商品列表</button>
 		<table border=1>
-			<tr><td>訂單編號</td><td>金額</td><td>狀態</td><td>評價</td><td>查看更多</td><td>評價消費</td><td>確認訂單</td>
+			<tr><td>訂單編號</td><td>金額</td><td>狀態</td><td>評價</td><td>查看更多</td>
 			<tr v-for="orders in dat">
 				<td>{{orders.oID}}</td>
 				<td>{{orders.sum}}</td>
 				<td>{{orders.status}}</td>
-                <td>{{orders.evaluation}}</td>
-                <td><button @click="getOrderDetail(orders.oID)">詳細資訊</button></td>
-                <td><button @click="evaluateOrder(orders.oID)">重新評價</button></td>
-                <td v-if="orders.status === '已送達'"><button @click="completeOrder(orders.oID)">完成訂單</button></td>
+				<td>{{orders.evaluation}}</td>
+				<td><button @click="getOrderDetail(orders.oID)">詳細資訊</button></td>
+                
 			</tr>
 		</table>
 	</div>
@@ -77,13 +77,14 @@
             <td>價格</td>
             <td>商品介紹</td>
             <td>數量</td>
+            <td>評價</td>
         </tr>
         <tr v-for="orderItems in dat">
             <td>{{orderItems.name}}</td>
             <td>{{orderItems.price}}</td>
             <td>{{orderItems.content}}</td>
             <td>{{orderItems.amount}}</td>
-
+						<td><button @click="evaluateOrder(orders.oID)">點我評價</button></td>
         </tr>
     </table>
     <button @click="listorder(uID)">回到訂單列表</button>

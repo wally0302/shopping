@@ -61,15 +61,35 @@
 		<h1>訂單</h1>
 		<button @click="back()">回到商品列表</button>
 		<table border=1>
-			<tr><td>訂單編號</td><td>金額</td><td>狀態</td><td>處理訂單</td></tr>
+			<tr><td>訂單編號</td><td>金額</td><td>查看更多</td><td>狀態</td><td>處理訂單</td></tr>
 			<tr v-for="product in dat">
 				<td>{{product.oID}}</td>
 				<td>{{product.sum}}</td>
+				<td><button @click="getOrderDetail(orders.oID)">詳細資訊</button></td><!--要新增程式-->
 				<td>{{product.status}}</td>
                 <td v-if="product.status === '待確認'"><button @click="dealProduct(product.oID)">確認</button></td>
 				<td v-if="product.status === '已處理'"><button @click="sendProduct(product.oID)">出貨</button></td>
 				</table>
 	</div>
+	<!-- 訂單詳細內容頁面 -->
+    <div v-if="UI=='orderDetail'">
+    <h1>{{currentOID}}號訂單</h1> 
+    <table border=1>
+        <tr>
+            <td>商品名稱</td>
+            <td>價格</td>
+            <td>商品介紹</td>
+            <td>數量</td>
+        </tr>
+        <tr v-for="orderItems in dat">
+            <td>{{orderItems.name}}</td>
+            <td>{{orderItems.price}}</td>
+            <td>{{orderItems.content}}</td>
+            <td>{{orderItems.amount}}</td>
+        </tr>
+    </table>
+    <button @click="listorder(uID)">回到訂單列表</button>
+    </div>
 	</div>
 	<script>
 	const todoApp= Vue.createApp({
