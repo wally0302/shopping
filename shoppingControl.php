@@ -125,15 +125,15 @@ case "getOrderDetail":
     
 // 【客戶評價訂單】
 case "evaluateOrder":	
-	$oID=(int)$_REQUEST['oID'];
+	$itemID=(int)$_REQUEST['itemID'];
     $evaluation=(int)$_REQUEST['evaluation'];
-	evaluateOrder($oID, $evaluation);
+	evaluateOrder($itemID, $evaluation);
 	return;
 
 // 【客戶完成訂單】
 case "completeOrder":	
-	$oID = (int)$_REQUEST['oID'];
-    completeOrder($oID);
+	$itemID = (int)$_REQUEST['itemID'];
+    completeOrder($itemID);
     return;
 
 // 【商家查看訂單】
@@ -157,6 +157,9 @@ case "achieveProduct":
 	$oID = (int)$_REQUEST['oID'];
     achieveProduct($oID);
     return;
+    
+// 3c
+
 default:
   
 }

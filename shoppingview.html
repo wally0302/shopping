@@ -15,8 +15,8 @@
 			<tr><td>序號</td><td>商品名稱</td><td>商家名稱</td><td>價格</td><td>庫存</td><td>查看更多</td><td>加入購物車</td></tr>
 			<tr v-for="product in dat">
 				<td>{{product.pID}}</td>
-				<td>{{product.name}}</td>
-				<td>{{product.uID}}</td>
+				<td>{{product.pName}}</td>
+				<td>{{product.uName}}</td>
 				<td>{{product.price}}</td>
 				<td>{{product.stock}}</td>
 				<td><button @click="getProductDetail(product.pID)">詳細資訊</button></td><!--程式要改-->
@@ -42,12 +42,12 @@
 		<h1>我的購物車</h1>
 		<button @click="back()">回到商品列表</button><!--<button @click="setAddUI()">查看購物車</button>-->
 		<table border=1>
-			<tr><td>商品名稱</td><td>價格</td><td>購買數量</td><td>- </td></tr>
+			<tr><td>商品名稱</td><td>價格</td><td>購買數量</td><td>刪除</td></tr>
 			<tr v-for="product in dat">
 				<td>{{product.name}}</td>
 				<td>{{product.price}}</td>
 				<td>{{product.amount}}</td>
-				<td><button @click="delCart(product.pID, uID)">刪</button></td>
+				<td><button @click="delCart(product.pID)">刪除</button></td>
 			</tr>
 		</table>
         <h2>總金額：{{totalPrice}}</h2> <button @click="finishOrder(uID, totalPrice)">確認並結帳</button>
@@ -57,14 +57,11 @@
 		<h1>我的訂單</h1>
 		<button @click="back()">回到商品列表</button>
 		<table border=1>
-			<tr><td>訂單編號</td><td>金額</td><td>狀態</td><td>評價</td><td>查看更多</td>
+			<tr><td>訂單編號</td><td>金額</td><td>查看更多</td>
 			<tr v-for="orders in dat">
 				<td>{{orders.oID}}</td>
 				<td>{{orders.sum}}</td>
-				<td>{{orders.status}}</td>
-				<td>{{orders.evaluation}}</td>
 				<td><button @click="getOrderDetail(orders.oID)">詳細資訊</button></td>
-                
 			</tr>
 		</table>
 	</div>
@@ -77,6 +74,9 @@
             <td>價格</td>
             <td>商品介紹</td>
             <td>數量</td>
+            <td>狀態</td>
+            <td>完成訂單</td>
+            <td>重新評價</td>
             <td>評價</td>
         </tr>
         <tr v-for="orderItems in dat">
@@ -84,7 +84,11 @@
             <td>{{orderItems.price}}</td>
             <td>{{orderItems.content}}</td>
             <td>{{orderItems.amount}}</td>
-						<td><button @click="evaluateOrder(orders.oID)">點我評價</button></td>
+            <td>{{orderItems.status}}</td>
+            <td v-if="orderItems.status === '已送達'"><button @click="completeOrder(orderItems.itemID)">確認收貨</button></td>
+            <td v-else></td>
+			<td><button @click="evaluateOrder(orderItems.itemID)">點我評價</button></td>
+            <td>{{orderItems.evaluation}}</td>
         </tr>
     </table>
     <button @click="listorder(uID)">回到訂單列表</button>
@@ -119,7 +123,8 @@
                 totalPrice: 0, // 購物車總金額
                 uID: uID, // 目前的客戶uID
                 currentOID: 0, // 目前選取的訂單oID
-                currentEvaluation: 5, // 目前選取訂單的評價
+                currentItemID: 0,
+                currentEvaluation: 5, // 目前選取項目的評價
 			};
 		},
 		methods: {
@@ -205,17 +210,17 @@
 			},
             
             // 刪除購物車商品
-			delCart: function (id, uID) {
+			delCart: function (id) {
 				const that=this;
-				console.log(id);
-                console.log('delCart uID: ',uID);
-				let url="shoppingControl.php?act=delCart&id="+id+"&uID="+uID;
+				console.log('delcart pid: ', that.pID);
+                console.log('delCart uID: ',that.uID);
+				let url="shoppingControl.php?act=delCart&id="+id+"&uID="+that.uID;
 				fetch(url,{
 					method: 'POST'
 				})
 				.then(function(res){return res.text(); }) //取得傳回值，轉為文字
 				.then(function(data){
-                    this.listcart(that.uID);
+                    that.listcart(that.uID);
 				})
                 
 			},
@@ -264,50 +269,50 @@
 				.then(function(res){return res.text(); }) //取得傳回值，轉為文字
 				.then(function(data){ 
 					console.log(data);
-                    that.listcart(uID);
+                    that.listcart(that.uID);
 				})
             },
             
             // 進入訂單評價頁面
-            evaluateOrder: function (oID) {
+            evaluateOrder: function (itemID) {
                 const that=this;
-                that.currentOID = oID;
-                console.log('evaluateOrder oID: ', this.currentOID);
+                that.currentItemID = itemID;
+                console.log('evaluateOrder itemID: ', this.currentItemID);
                 this.setUI('evaluateUI');
             },
             
             // 確認訂單評價
             confirmEvaluation: function () {
-                console.log("評價oID："+ this.currentOID);
+                console.log("評價itemID："+ this.currentItemID);
                 console.log("確認評價：" + this.currentEvaluation);
                 const that=this;
-                choseOID = this.current
-				let url="shoppingControl.php?act=evaluateOrder&oID="+this.currentOID+"&evaluation="+this.currentEvaluation;
+				let url="shoppingControl.php?act=evaluateOrder&itemID="+this.currentItemID+"&evaluation="+this.currentEvaluation;
 				fetch(url,{
 					method: 'POST',
 				})
 				.then(function(res){return res.text(); }) //取得傳回值，轉為文字
 				.then(function(data){ 
 					console.log(data);
-                    that.listorder(that.uID);
+                    that.getOrderDetail(that.currentOID);
 				})
                 this.currentEvaluation = 5;
             },
             
             // 完成訂單
-            completeOrder: function (oID) {
+            completeOrder: function (itemID) {
                 const that=this;
-                console.log('completeOrder oID: ', oID);
-                let url="shoppingControl.php?act=completeOrder&oID="+oID;
+                console.log('completeOrder itemID: ', itemID);
+                let url="shoppingControl.php?act=completeOrder&itemID="+itemID;
                 fetch(url,{
                     method: 'POST',
                 })
                 .then(function(res){return res.text(); }) //取得傳回值，轉為文字
                 .then(function(data){ 
                     console.log(data);
-                    that.listorder(that.uID);
+                    that.getOrderDetail(that.currentOID);
                 })
             },
+            
 			setUI: function(page) {
 				this.UI=page;
 			}

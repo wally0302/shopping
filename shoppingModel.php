@@ -39,7 +39,7 @@ require('dbconfig.php');
 // 【客戶查看商品列表】
 function listProduct(){
 	global $db;
-	$sql="select pID, name, price, stock from product;";
+	$sql="select product.pID as pID, product.name as pName, product.price as price, product.stock as stock, userinfo.name as uName from product inner join userinfo on product.uID = userinfo.uID;";
 	$stmt=mysqli_prepare($db,$sql);
 	mysqli_stmt_execute($stmt);
 	$result=mysqli_stmt_get_result($stmt);
@@ -219,34 +219,13 @@ function clearCart($uID){
 	$stmt=mysqli_prepare($db,$sql);
 	mysqli_stmt_bind_param($stmt,"i",$uID);
 	mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    if ($row = mysqli_fetch_assoc($result)) {
-        return $row['status'];
-    } else {
-        return false; // 或者你可以根據實際情況返回其他值
-    }
 	return True;
-}
-
-// 【客戶查看訂單詳細內容】
-function getOrderDetail($oID){
-	global $db;
-	$sql="SELECT product.name, product.price, product.content, order_item.amount from product inner join order_item on product.pID = order_item.pID where oID = ?;";
-	$stmt=mysqli_prepare($db,$sql);
-	mysqli_stmt_bind_param($stmt,"i",$oID);
-	mysqli_stmt_execute($stmt);
-	$result=mysqli_stmt_get_result($stmt);
-	$rows=array();
-	while($r=mysqli_fetch_assoc($result)){
-		$rows[]=$r;
-	}
-	return $rows;
 }
 
 // 【客戶查看訂單】
 function listorder($uID){ 
 	global $db;
-	$sql="select oID, sum, status, evaluation from orders where userID = ?;";
+	$sql="select oID, sum from orders where userID = ?;";
 	$stmt=mysqli_prepare($db,$sql);
     mysqli_stmt_bind_param($stmt,"i", $uID);
 	mysqli_stmt_execute($stmt);
@@ -258,22 +237,37 @@ function listorder($uID){
 	return $rows;
 }
 
-// 【客戶評價訂單】
-function evaluateOrder($oID, $evaluation){
-    global $db;
-	$sql="update orders set evaluation = ? where oID = ?";
+// 【客戶查看訂單詳細內容】
+function getOrderDetail($oID){
+	global $db;
+	$sql="select product.name, product.price, product.content, order_item.amount, order_item.evaluation, order_item.status, order_item.itemID from product inner join order_item on product.pID = order_item.pID where oID = ?;";
 	$stmt=mysqli_prepare($db,$sql);
-	mysqli_stmt_bind_param($stmt,"ii",$evaluation, $oID);
+	mysqli_stmt_bind_param($stmt,"i",$oID);
+	mysqli_stmt_execute($stmt);
+	$result=mysqli_stmt_get_result($stmt);
+	$rows=array();
+	while($r=mysqli_fetch_assoc($result)){
+		$rows[]=$r;
+	}
+	return $rows;
+}
+
+// 【客戶評價訂單】
+function evaluateOrder($itemID, $evaluation){
+    global $db;
+	$sql="update order_item set evaluation = ? where itemID = ?";
+	$stmt=mysqli_prepare($db,$sql);
+	mysqli_stmt_bind_param($stmt,"ii",$evaluation, $itemID);
 	mysqli_stmt_execute($stmt);
 	return True;
 }
 
 // 【客戶完成訂單】
-function completeOrder($oID){
+function completeOrder($itemID){
     global $db;
-	$sql="update orders set status = '已收貨' where oID = ?";
+	$sql="update order_item set status = '已收貨' where itemID = ?";
 	$stmt=mysqli_prepare($db,$sql);
-	mysqli_stmt_bind_param($stmt,"i", $oID);
+	mysqli_stmt_bind_param($stmt,"i", $itemID);
 	mysqli_stmt_execute($stmt);
 	return True;
 }
@@ -318,6 +312,10 @@ function achieveProduct($oID){
 	mysqli_stmt_execute($stmt);
 	return True;
 }
+
+// 3c 
+
+
 
 
 
