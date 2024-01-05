@@ -1,7 +1,6 @@
 <html><head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<script type="text/javascript" src="https://unpkg.com/vue@next"></script>
-	</head>
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>	</head>
 	
 	<body >
 	<hr />
@@ -9,17 +8,15 @@
 	<div v-if="UI=='main'"> 
 		<h1>物流</h1>
 		<table border=1>
-			<tr><td>訂單編號</td><td>金額</td><td>狀態</td><td>查看更多</td>
+			<tr><td>訂單編號</td><td>查看更多</td>
 			<tr v-for="product in dat">
 				<td>{{product.oID}}</td>
-				<td>{{product.sum}}</td>
-				<td>{{product.status}}</td>
-				<td><button @click="getOrderDetail(orders.oID)">詳細資訊</button></td><!--要新增程式-->
+				<td><button @click="cargetOrderDetail(product.oID)">詳細資訊</button></td>
 				</table>
 	</div>
 	<!-- 訂單詳細內容頁面 -->
     <div v-if="UI=='orderDetail'">
-    <h1>{{currentOID}}號訂單</h1> 
+    <h1>訂單</h1> 
     <table border=1>
         <tr>
             <td>商家名稱</td>
@@ -27,15 +24,12 @@
             <td>處理訂單</td></tr>
         </tr>
         <tr v-for="orderItems in dat">
-            <td>{{orderItems.name}}</td>
-            <td>{{orderItems.price}}</td>
-            <td>{{orderItems.content}}</td>
-            <td>{{orderItems.amount}}</td>
-						<td v-if="product.status === '待確認'"><button @click="dealProduct(product.oID)">確認</button></td>
-						<td v-if="product.status === '已處理'"><button @click="sendProduct(product.oID)">出貨</button></td>
+            <td>{{orderItems.uID}}</td>
+            <td>{{orderItems.status}}</td>
+			<td v-if="orderItems.status === '已寄送'"><button @click="cardealProduct(orderItems.itemID)">確認</button></td>
         </tr>
     </table>
-    <button @click="listorder(uID)">回到訂單列表</button>
+    <button @click="carlistorder()">回到訂單列表</button>	
     </div>
 	</div>
 	<script>
@@ -172,14 +166,16 @@
                 that.setUI('main');
                 that.loadList();
             },
-			listorder: function () { //列訂單
+			carlistorder: function () { //列訂單
 				const that=this; 
-				fetch('shoppingControl.php?act=listAllorder')
+				fetch('shoppingControl.php?act=carlistAllorder')
 				.then(function(response) {
 					return response.json();
 				})
                 .then(function(myJson) {
                     that.dat = myJson;
+					that.setUI('main');
+
                 });
 			},
 			setEditUI: function(pID, name, price, stock, content) {
@@ -200,9 +196,22 @@
                 .then(function(res){return res.text(); }) //取得傳回值，轉為文字
                 .then(function(data){ 
                     console.log(data);
-                    that.listorder(that.uID);
+                    that.carlistorder();
                 })
             },
+			//商家將已寄送-> 已送達
+			cardealProduct: function (itemID) {
+				const that=this;
+				let url="shoppingControl.php?act=cardealProduct&itemID="+itemID;
+				fetch(url,{
+					method: 'POST',
+				})
+				.then(function(res){return res.text(); }) //取得傳回值，轉為文字
+				.then(function(data){ 
+					console.log(data);
+					that.carlistorder();
+				})
+			},
             // 寄送訂單
             sendProduct: function (oID) {
                 const that=this;
@@ -213,7 +222,7 @@
                 .then(function(res){return res.text(); }) //取得傳回值，轉為文字
                 .then(function(data){ 
                     console.log(data);
-                    that.listorder(that.uID);
+                    that.carlistorder();
                 })
             },
 			// 送達訂單
@@ -226,9 +235,22 @@
                 .then(function(res){return res.text(); }) //取得傳回值，轉為文字
                 .then(function(data){ 
                     console.log(data);
-                    that.listorder(that.uID);
+                    that.carlistorder();
                 })
             },
+			cargetOrderDetail: function (oID) {
+				const that=this;
+				let url="shoppingControl.php?act=cargetOrderDetail&oID="+oID;
+				console.log(url);
+				fetch(url)
+				.then(function(response) {
+					return response.json();
+				})
+				.then(function(myJson) {
+					that.dat = myJson;
+				});
+				this.setUI('orderDetail');
+			},
 			setAddUI: function() {
 				this.newproduct={
 					id: -1,
@@ -244,7 +266,7 @@
 			}
 		},
 		created() {
-			this.listorder();
+			this.carlistorder();
 		}
 	}).mount("#main");
 	</script>

@@ -167,20 +167,21 @@ function updateProduct($pID, $name, $price, $stock, $content){
 }
 
 // 【商家新增商品】
-function addProduct($name, $price, $stock, $content){
+function addProduct($name, $price, $stock, $content, $uID){
     global $db;
-	$sql="insert into product (name, price, stock, content) values (? , ? , ? , ?);";
+	$sql="insert into product (name, price, stock, content, uID) values (? , ? , ? , ?,?);";
 	$stmt=mysqli_prepare($db,$sql);
-	mysqli_stmt_bind_param($stmt, "ssss", $name, $price, $stock, $content);
+	mysqli_stmt_bind_param($stmt, "ssssi", $name, $price, $stock, $content,$uID);
 	mysqli_stmt_execute($stmt);
 	return True;
 }
 
 // 【商家查看商品詳細內容】
-function listProductInfo(){
+function listProductInfo($uID){
 	global $db;
-	$sql="select * from product;";
+	$sql="select * from product where uID = ?;";
 	$stmt=mysqli_prepare($db,$sql);
+	mysqli_stmt_bind_param($stmt,"i", $uID);
 	mysqli_stmt_execute($stmt);
 	$result=mysqli_stmt_get_result($stmt);
 	$rows=array();
@@ -189,6 +190,9 @@ function listProductInfo(){
 	}
 	return $rows;
 }
+
+
+
 
 // 3b
 // 【客戶進行結帳】
@@ -240,7 +244,7 @@ function listorder($uID){
 // 【客戶查看訂單詳細內容】
 function getOrderDetail($oID){
 	global $db;
-	$sql="select product.name, product.price, product.content, order_item.amount, order_item.evaluation, order_item.status, order_item.itemID from product inner join order_item on product.pID = order_item.pID where oID = ?;";
+	$sql="select * from product inner join order_item on product.pID = order_item.pID where oID = ?;";
 	$stmt=mysqli_prepare($db,$sql);
 	mysqli_stmt_bind_param($stmt,"i",$oID);
 	mysqli_stmt_execute($stmt);
@@ -272,11 +276,12 @@ function completeOrder($itemID){
 	return True;
 }
 
-// 【商家查看訂單】
-function listAllorder(){
+// 【商家查看自己訂單】
+function selllistAllorder($uID){
 	global $db;
-	$sql="select * from orders;";
+	$sql="select order_item.oID,order_item.status from product inner join order_item on product.pID = order_item.pID where product.uID = ?;";
 	$stmt=mysqli_prepare($db,$sql);
+	mysqli_stmt_bind_param($stmt,"i", $uID);
 	mysqli_stmt_execute($stmt);
 	$result=mysqli_stmt_get_result($stmt);
 	$rows=array();
@@ -288,7 +293,7 @@ function listAllorder(){
 // 【商家處理訂單】
 function dealProduct($oID){
     global $db;
-	$sql="update orders set status = '已處理' where oID = ?";
+	$sql="update order_item set status = '已處理' where oID = ?";
 	$stmt=mysqli_prepare($db,$sql);
 	mysqli_stmt_bind_param($stmt,"i", $oID);
 	mysqli_stmt_execute($stmt);
@@ -297,7 +302,7 @@ function dealProduct($oID){
 // 【商家寄送訂單】
 function sendProduct($oID){
     global $db;
-	$sql="update orders set status = '已寄送' where oID = ?";
+	$sql="update order_item set status = '已寄送' where oID = ?";
 	$stmt=mysqli_prepare($db,$sql);
 	mysqli_stmt_bind_param($stmt,"i", $oID);
 	mysqli_stmt_execute($stmt);
@@ -314,9 +319,56 @@ function achieveProduct($oID){
 }
 
 // 3c 
+//【商家查看訂單詳細內容】
+function sellgetOrderDetail($oID, $uID){
+	global $db;
+	$sql=" select product.name, product.price, product.content, order_item.amount, order_item.evaluation, order_item.status, order_item.itemID from product inner join order_item on product.pID = order_item.pID where order_item.oID = ? and product.uID = ?;";
+	$stmt=mysqli_prepare($db,$sql);
+	mysqli_stmt_bind_param($stmt,"ii",$oID,$uID);
+	mysqli_stmt_execute($stmt);
+	$result=mysqli_stmt_get_result($stmt);
+	$rows=array();
+	while($r=mysqli_fetch_assoc($result)){
+		$rows[]=$r;
+	}
+	return $rows;
+}
 
+// 【物流查看訂單】
+function carlistAllorder(){
+	global $db;
+	$sql="select * from orders where 1";
+	$stmt=mysqli_prepare($db,$sql);
+	mysqli_stmt_execute($stmt);
+	$result=mysqli_stmt_get_result($stmt);
+	$rows=array();
+	while($r=mysqli_fetch_assoc($result)){
+		$rows[]=$r;
+	}
+	return $rows;
+}
 
-
-
-
+//【商家查看該筆訂單詳細內容】
+function cargetOrderDetail($oID){
+	global $db;
+	$sql="select * from product inner join order_item on product.pID = order_item.pID where order_item.oID=?;";
+	$stmt=mysqli_prepare($db,$sql);
+	mysqli_stmt_bind_param($stmt,"i",$oID);
+	mysqli_stmt_execute($stmt);
+	$result=mysqli_stmt_get_result($stmt);
+	$rows=array();
+	while($r=mysqli_fetch_assoc($result)){
+		$rows[]=$r;
+	}
+	return $rows;
+}
+// 【物流處理訂單】
+function cardealProduct($itemID){
+    global $db;
+	$sql="update order_item set status = '已送達' where itemID = ?";
+	$stmt=mysqli_prepare($db,$sql);
+	mysqli_stmt_bind_param($stmt,"i", $itemID);
+	mysqli_stmt_execute($stmt);
+	return True;
+}
 ?>

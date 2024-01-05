@@ -1,6 +1,6 @@
 <html><head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<script type="text/javascript" src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 	</head>
 	
 	<body >
@@ -90,15 +90,15 @@
             })
             .then(function(res) { return res.json(); }) // 取得傳回值，轉為 json
             .then(function(data) {
+                console.log('-------------------');
                 console.log(data); // {success: true}
                 if (data.success==true) {
                     switch (data.role) {
                         case '1':
                         window.location.href = 'shoppingview.html?uID=' + data.uID;
-                        
                             break;
                         case '2':
-                            window.location.href = 'seller.html';//跳轉到賣家頁面
+                        window.location.href = 'seller.html?uID=' + data.uID;
                             break;
                         case '3':
                         window.location.href = 'car.html';//跳轉物流

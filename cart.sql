@@ -30,16 +30,17 @@ SET time_zone = "+00:00";
 CREATE TABLE `cart` (
   `kID` int(11) NOT NULL,
   `pID` int(11) NOT NULL,
-  `amount` int(11) NOT NULL
+  `amount` int(11) NOT NULL,
+  `uID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- 傾印資料表的資料 `cart`
 --
 
-INSERT INTO `cart` (`kID`, `pID`, `amount`) VALUES
-(1, 3, 1),
-(2, 5, 2);
+INSERT INTO `cart` (`kID`, `pID`, `amount`,`uID`) VALUES
+(1, 3, 1, 28),
+(2, 5, 2, 28);
 
 --
 -- 已傾印資料表的索引

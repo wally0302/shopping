@@ -82,12 +82,13 @@ case "updateProduct":
 case "addProduct":
     $jsonStr = $_POST['dat'];
     $product = json_decode($jsonStr);
-    addProduct($product->name, $product->price, $product->stock, $product->content);
+    addProduct($product->name, $product->price, $product->stock, $product->content, $product->id);
     return;
     
 // 【商家查看商品詳細內容】
 case "listProductInfo":
-	$products=listProductInfo();
+    $uID=(int)$_REQUEST['uID'];
+	$products=listProductInfo($uID);
 	echo json_encode($products);
 	return;
     
@@ -137,8 +138,9 @@ case "completeOrder":
     return;
 
 // 【商家查看訂單】
-case "listAllorder":
-	$order=listAllorder();
+case "selllistAllorder":
+	$uID=(int)$_REQUEST['uID'];
+	$order=selllistAllorder($uID);
 	echo json_encode($order);
 	return;
 // 【商家處理訂單】
@@ -159,9 +161,34 @@ case "achieveProduct":
     return;
     
 // 3c
-
+// 【商家查看訂單詳細內容】
+case "sellgetOrderDetail":	
+	$oID=(int)$_REQUEST['oID'];
+	$uID=(int)$_REQUEST['uID'];
+	$orderItems=sellgetOrderDetail($oID, $uID);
+	echo json_encode($orderItems);
+	return;
 default:
   
+
+// 【物流查看訂單】
+case "carlistAllorder":
+	$order=carlistAllorder();
+	echo json_encode($order);
+	return;
+
+// 【物流查看該筆訂單的詳細內容】
+case "cargetOrderDetail":	
+	$oID=(int)$_REQUEST['oID'];
+	$orderItems=cargetOrderDetail($oID);
+	echo json_encode($orderItems);
+	return;
+// 【物流處理訂單】
+case "cardealProduct":	
+	$itemID = (int)$_REQUEST['itemID'];
+    cardealProduct($itemID);
+    return;
+
 }
 
 ?>

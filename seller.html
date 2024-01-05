@@ -1,13 +1,12 @@
 <html><head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<script type="text/javascript" src="https://unpkg.com/vue@next"></script>
-	</head>
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>	</head>
 	
 	<body >
 	<hr />
 	<div id="main">
 	<div id="list" v-if="UI=='main'">
-		<h1>商家的商品列表</h1>
+		<h1>{{uID}}的商品列表</h1>
 		<button @click="setAddUI()">新增商品</button><button @click="listorder()">查看訂單</button><!--<button @click="listcart()">查看購物車</button>-->
 		<table border=1>
 			<tr><td>序號</td><td>商品名稱</td><td>價格</td><td>庫存</td><td>查看更多</td><td>修改資訊</td><td>刪除商品</td></tr>
@@ -33,6 +32,8 @@
         <input type='button' @click="Cancel()" value="取消">
 	</div>
     <div v-if="UI=='addForm'">
+		<!-- 新增uid -->
+
 		商品名稱: <input type="text"  v-model="newproduct.name"/> <br/>
 		價格: <input type="text"  v-model="newproduct.price"/> <br/>
 		庫存: <input type="text"  v-model="newproduct.stock"/> <br/>
@@ -61,11 +62,10 @@
 		<h1>訂單</h1>
 		<button @click="back()">回到商品列表</button>
 		<table border=1>
-			<tr><td>訂單編號</td><td>金額</td><td>查看更多</td><td>狀態</td><td>處理訂單</td></tr>
+			<tr><td>訂單編號</td><td>查看更多</td><td>狀態</td><td>處理訂單</td></tr>
 			<tr v-for="product in dat">
 				<td>{{product.oID}}</td>
-				<td>{{product.sum}}</td>
-				<td><button @click="getOrderDetail(orders.oID)">詳細資訊</button></td><!--要新增程式-->
+				<td><button @click="sellgetOrderDetail(product.oID)">訂單詳細資訊</button></td>
 				<td>{{product.status}}</td>
                 <td v-if="product.status === '待確認'"><button @click="dealProduct(product.oID)">確認</button></td>
 				<td v-if="product.status === '已處理'"><button @click="sendProduct(product.oID)">出貨</button></td>
@@ -73,7 +73,7 @@
 	</div>
 	<!-- 訂單詳細內容頁面 -->
     <div v-if="UI=='orderDetail'">
-    <h1>{{currentOID}}號訂單</h1> 
+    <h1>訂單</h1> 
     <table border=1>
         <tr>
             <td>商品名稱</td>
@@ -92,24 +92,29 @@
     </div>
 	</div>
 	<script>
+	const urlParams = new URLSearchParams(window.location.search);
+	const uID = urlParams.get('uID');
+	console.log(uID);
 	const todoApp= Vue.createApp({
 		data() {
 			return {
 				UI: 'main',
 				dat: [],
 				newproduct: {
-					id: -1,
+					id: uID,
 					name: '',
 					price: '',
 					stock: '',
 					content: ''
-				}
+				},
+				uID: uID, // 目前的uID
 			}
 		},
 		methods: {
-			loadList: function () {
+			loadList: function (uID) {
 				const that=this; //this  ==> stands for vm6. let's save `this` to `that`
-				fetch('shoppingControl.php?act=listProductInfo')
+				let url="shoppingControl.php?act=listProductInfo&uID="+uID;
+				fetch(url)				
 				.then(function(response) {
 					return response.json();
 				})
@@ -119,7 +124,10 @@
 	
 					that.dat = myJson;
 					//todoApp.dat = myJson;
-				});
+				})
+				.catch(function(error) {
+                console.error('Error:', error);
+            	});
 			},
 			listcart: function () {
 				const that=this; 
@@ -154,7 +162,7 @@
 			back: function () {
 				const that=this;
 				that.setUI('main');
-				that.loadList();
+				that.loadList(that.uID);
 			},
             delProduct: function (id) {
 				const that=this;
@@ -166,7 +174,7 @@
 				.then(function(res){return res.text(); }) //取得傳回值，轉為文字
 				.then(function(data){
 					that.setUI('main');
-				    that.loadList();
+				    that.loadList(that.uID);
 				})
 			},
             updateProduct: function () {
@@ -183,7 +191,7 @@
                 .then(function(data){ 
                     console.log(data);
                     that.setUI('main');
-                    that.loadList();
+                    that.loadList(that.uID);
                 })
             },
             addProduct: function () {
@@ -199,8 +207,8 @@
                 .then(function(res){return res.text(); }) //取得傳回值，轉為文字
                 .then(function(data){ 
                     console.log(data);
+					that.loadList(that.uID);
                     that.setUI('main');
-                    that.loadList();
                 })
             },
 			addJob: function () {
@@ -217,17 +225,18 @@
                 .then(function(data){ 
                     console.log(data);
                     that.setUI('main');
-                    that.loadList();
+                    that.loadList(that.uID);
                 })
             },
             Cancel: function () {
                 const that=this;			
                 that.setUI('main');
-                that.loadList();
+                that.loadList(that.uID);
             },
 			listorder: function () { //列訂單
 				const that=this; 
-				fetch('shoppingControl.php?act=listAllorder')
+				let url="shoppingControl.php?act=selllistAllorder&uID="+uID;
+				fetch(url)	
 				.then(function(response) {
 					return response.json();
 				})
@@ -271,14 +280,31 @@
                     that.listorder(that.uID);
                 })
             },
+			//訂單詳細資訊
+			sellgetOrderDetail: function (oID) {
+				console.log("oID");
+				console.log(oID);
+				console.log(this.uID);//商家的uID
+				const that=this;
+				let url="shoppingControl.php?act=sellgetOrderDetail&oID="+oID+"&uID="+this.uID;
+				fetch(url)
+				.then(function(response) {
+					return response.json();
+				})
+				.then(function(myJson) {
+					that.dat = myJson;
+				});
+				this.setUI('orderDetail');
+			},
 			setAddUI: function() {
 				this.newproduct={
-					id: -1,
+					id: uID,
 					name: '',
 					price: '',
 					stock: '',
 					content: ''
 				};
+				
 				this.setUI('addForm');
 			},
 			setUI: function(page) {
@@ -286,7 +312,7 @@
 			}
 		},
 		created() {
-			this.loadList();
+			this.loadList(this.uID);
 		}
 	}).mount("#main");
 	</script>
