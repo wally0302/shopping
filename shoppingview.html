@@ -85,9 +85,11 @@
             <td>{{orderItems.amount}}</td>
             <td>{{orderItems.status}}</td>
             <td v-if="orderItems.status === '已送達'"><button @click="completeOrder(orderItems.itemID)">確認收貨</button></td>
-            <td v-else></td>
-			<td><button @click="evaluateOrder(orderItems.itemID)">點我評價</button></td>
-            <td>{{orderItems.evaluation}}</td>
+			<td else></td>
+			<td v-if="orderItems.status === '已收貨'" ><button @click="evaluateOrder(orderItems.itemID)">點我評價</button></td>
+            <td v-if="orderItems.status === '已收貨'" >{{orderItems.evaluation}}</td>
+			
+
         </tr>
     </table>
     <button @click="listorder(uID)">回到訂單列表</button>
