@@ -146,13 +146,15 @@ case "selllistAllorder":
 // 【商家處理訂單】
 case "dealProduct":	
 	$oID = (int)$_REQUEST['oID'];
-    dealProduct($oID);
+    $uID = (int)$_REQUEST['uID'];
+    dealProduct($oID, $uID);
     return;
 
 // 【商家寄送出貨】
 case "sendProduct":	
 	$oID = (int)$_REQUEST['oID'];
-    sendProduct($oID);
+    $uID = (int)$_REQUEST['uID'];
+    sendProduct($oID, $uID);
     return;
 // 【商家出貨】
 case "achieveProduct":	
@@ -185,8 +187,9 @@ case "cargetOrderDetail":
 	return;
 // 【物流處理訂單】
 case "cardealProduct":	
-	$itemID = (int)$_REQUEST['itemID'];
-    cardealProduct($itemID);
+	$oID = (int)$_REQUEST['oID'];
+    $uID = (int)$_REQUEST['uID'];
+    cardealProduct($oID, $uID);
     return;
 
 }

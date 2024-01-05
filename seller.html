@@ -132,8 +132,8 @@
 				<td>{{product.oID}}</td>
 				<td><button @click="sellgetOrderDetail(product.oID)">訂單詳細資訊</button></td>
 				<td>{{product.status}}</td>
-                <td v-if="product.status === '待確認'"><button @click="dealProduct(product.oID)">確認</button></td>
-				<td v-if="product.status === '已處理'"><button @click="sendProduct(product.oID)">出貨</button></td>
+                <td v-if="product.status === '待確認'"><button @click="dealProduct(product.oID, this.uID)">確認</button></td>
+				<td v-if="product.status === '已處理'"><button @click="sendProduct(product.oID, this.uID)">出貨</button></td>
 				</table>
 	</div>
 	<!-- 訂單詳細內容頁面 -->
@@ -320,9 +320,9 @@
 				this.setUI('editForm');
 			},
             // 處理訂單
-            dealProduct: function (oID) {
+            dealProduct: function (oID, uID) {
                 const that=this;
-                let url="shoppingControl.php?act=dealProduct&oID="+oID;
+                let url="shoppingControl.php?act=dealProduct&oID="+oID+"&uID="+uID;
                 fetch(url,{
                     method: 'POST',
                 })
@@ -333,9 +333,9 @@
                 })
             },
             // 寄送訂單
-            sendProduct: function (oID) {
+            sendProduct: function (oID, uID) {
                 const that=this;
-                let url="shoppingControl.php?act=sendProduct&oID="+oID;
+                let url="shoppingControl.php?act=sendProduct&oID="+oID+"&uID="+uID;
                 fetch(url,{
                     method: 'POST',
                 })

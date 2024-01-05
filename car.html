@@ -85,14 +85,14 @@
     <h1>訂單</h1> 
     <table border=1>
         <tr>
-            <td>商家名稱</td>
+            <td>商家id</td>
             <td>狀態</td>
             <td>處理訂單</td></tr>
         </tr>
         <tr v-for="orderItems in dat">
             <td>{{orderItems.uID}}</td>
             <td>{{orderItems.status}}</td>
-			<td v-if="orderItems.status === '已寄送'"><button @click="cardealProduct(orderItems.itemID)">確認</button></td>
+			<td v-if="orderItems.status === '已寄送'"><button @click="cardealProduct(this.currentOID, orderItems.uID)">確認</button></td>
         </tr>
     </table>
     <button @click="carlistorder()">回到訂單列表</button>	
@@ -110,7 +110,8 @@
 					price: '',
 					stock: '',
 					content: ''
-				}
+				},
+                currentOID: 0, // 目前點進去的訂單ID
 			}
 		},
 		methods: {
@@ -266,9 +267,11 @@
                 })
             },
 			//商家將已寄送-> 已送達
-			cardealProduct: function (itemID) {
+			cardealProduct: function (oID, uID) {
 				const that=this;
-				let url="shoppingControl.php?act=cardealProduct&itemID="+itemID;
+                console.log(uID+"這是Uid");
+				let url="shoppingControl.php?act=cardealProduct&oID="+oID+"&uID="+uID;
+                console.log(url);
 				fetch(url,{
 					method: 'POST',
 				})
@@ -306,6 +309,7 @@
             },
 			cargetOrderDetail: function (oID) {
 				const that=this;
+                that.currentOID = oID;
 				let url="shoppingControl.php?act=cargetOrderDetail&oID="+oID;
 				console.log(url);
 				fetch(url)
